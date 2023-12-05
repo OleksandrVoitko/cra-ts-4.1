@@ -1,48 +1,56 @@
-import { Component } from 'react';
+import { useState } from "react";
 
-export class ContactForm extends Component {
-  state = { name: '', number: '' };
-  handleChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
+export const ContactForm = ({ onSubmit }) => {
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
+
+  const handleChangeName = ({ target }) => {
+    setName(target.value);
   };
-  handleSubmit = e => {
+  const handleChangeNumber = ({ target }) => {
+    setNumber(target.value);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, number } = this.state;
-    this.props.onSubmit(name, number);
-    this.reset();
+
+    onSubmit(name, number);
+    setName("");
+    setNumber("");
   };
-  reset() {
-    this.setState({ name: '', number: '' });
-  }
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="inputName">Name</label>
-          <input
-            name="name"
-            type="text"
-            className="form-control"
-            id="inputName"
-            required
-            value={this.state.name}
-            onChange={this.handleChange}
-          />
-          <label className="form-label" htmlFor="inputNumber"> Number</label>
-          <input
-            name="number"
-            type="telephone"
-            className="form-control"
-            id="inputNumber"
-            required
-            value={this.state.number}
-            onChange={this.handleChange}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Add
-        </button>
-      </form>
-    );
-  }
-}
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label className="form-label" htmlFor="inputName">
+          Name
+        </label>
+        <input
+          name="name"
+          type="text"
+          className="form-control"
+          id="inputName"
+          required
+          value={name}
+          onChange={handleChangeName}
+        />
+        <label className="form-label" htmlFor="inputNumber">
+          {" "}
+          Number
+        </label>
+        <input
+          name="number"
+          type="telephone"
+          className="form-control"
+          id="inputNumber"
+          required
+          value={number}
+          onChange={handleChangeNumber}
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">
+        Add
+      </button>
+    </form>
+  );
+};
