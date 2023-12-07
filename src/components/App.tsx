@@ -1,4 +1,4 @@
-import { Component, useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { Wrapper } from "./App.styled";
 import { ContactForm } from "./ContactForm/ContactForm";
 import { nanoid } from "nanoid";
@@ -7,16 +7,25 @@ import { Filter } from "./Filter/Filter";
 import phoneNumbers from "../data/phoneNumbers.json";
 import { DellAlert } from "./DellAlert/DellAlert";
 
+export interface Contact {
+  id: string;
+  name: string;
+  number: string;
+}
+
 export const App = () => {
-  const [contacts, setContacts] = useState([...phoneNumbers]);
-  const [filter, setFilter] = useState("");
-  const [deleted, setDeleted] = useState(false);
-  const [delName, setDelName] = useState("");
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [filter, setFilter] = useState<string>("");
+  const [deleted, setDeleted] = useState<boolean>(false);
+  const [delName, setDelName] = useState<string>("");
 
   useEffect(() => {
     const localContacts = localStorage.getItem("contacts");
+
     if (localContacts) {
       setContacts(JSON.parse(localContacts));
+    } else {
+      setContacts(phoneNumbers);
     }
   }, []);
 
@@ -24,11 +33,11 @@ export const App = () => {
     localStorage.setItem("contacts", JSON.stringify(contacts));
   }, [contacts]);
 
-  const handleChange = ({ target }) => {
-    setFilter(target.value);
+  const handleChange = ({ target }: ChangeEvent) => {
+    setFilter((target as HTMLInputElement).value);
   };
 
-  const handleSubmit = (name, number) => {
+  const handleSubmit = (name: string, number: string) => {
     if (
       contacts.find(
         (contact) =>
@@ -51,16 +60,17 @@ export const App = () => {
       name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
     );
 
-  const handleDeleteContact = (id) => {
+  const handleDeleteContact = (id: string) => {
     if (contacts.length !== 1) {
       setContacts(contacts.filter((contact) => contact.id !== id));
-      // localStorage.setItem("contacts", JSON.stringify(contacts));
     } else {
       setContacts([]);
-      // localStorage.setItem("contacts", JSON.stringify([]));
     }
+    let findContact: Contact | any = contacts.find(
+      (contact) => contact.id === id
+    );
 
-    setDelName(contacts.find((contact) => contact.id === id).name);
+    setDelName(findContact.name);
     setDeleted(true);
     setTimeout(() => {
       setDeleted(false);
@@ -81,82 +91,3 @@ export const App = () => {
     </Wrapper>
   );
 };
-
-// export class App extends Component {
-//   state = {
-//     contacts: [],
-//     filter: "",
-//     deleted: false,
-//     delName: "",
-//   };
-
-//   componentDidMount() {
-//     if (localStorage.getItem("contacts")) {
-//       this.setState({ contacts: JSON.parse(localStorage.getItem("contacts")) });
-//     } else {
-//       this.setState({ contacts: [...phoneNumbers] });
-//       localStorage.setItem("contacts", JSON.stringify(phoneNumbers));
-//     }
-//   }
-//   componentDidUpdate(prevProps, prevState) {
-//     localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
-//     if (prevState.contacts.length > this.state.contacts.length) {
-//       setTimeout(() => this.setState({ deleted: false, delName: "" }), 2000);
-//     }
-//   }
-
-//   handleChange = ({ target }) => {
-//     this.setState({ [target.name]: target.value });
-//   };
-
-//   handleSubmit = (name, number) => {
-//     if (
-//       this.state.contacts.find(
-//         (contact) =>
-//           contact.name.toLocaleLowerCase() === name.toLocaleLowerCase()
-//       )
-//     ) {
-//       alert(`${name} is already in contacts!`);
-//       return;
-//     }
-//     const newContact = {
-//       id: nanoid(),
-//       name,
-//       number,
-//     };
-//     this.setState(({ contacts }) => ({ contacts: [...contacts, newContact] }));
-//   };
-
-//   getFilteredContacts = () => {
-//     const { contacts, filter } = this.state;
-//     return contacts.filter(({ name }) =>
-//       name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
-//     );
-//   };
-
-//   handleDeleteContact = (id) => {
-//     const { contacts } = this.state;
-
-//     this.setState({
-//       contacts: contacts.filter((contact) => contact.id !== id),
-//       deleted: true,
-//       delName: contacts.find((contact) => contact.id === id).name,
-//     });
-//   };
-
-//   render() {
-//     return (
-//       <Wrapper>
-//         <h1>PhoneBook</h1>
-//         <ContactForm onSubmit={this.handleSubmit} />
-//         <h2>Contacts</h2>
-//         <Filter filter={this.state.filter} onChange={this.handleChange} />
-//         {this.state.deleted && <DellAlert>{this.state.delName}</DellAlert>}
-//         <ContactList
-//           contacts={this.getFilteredContacts()}
-//           handleDeleteContact={this.handleDeleteContact}
-//         />
-//       </Wrapper>
-//     );
-//   }
-// }

@@ -1,6 +1,16 @@
+import { FC } from "react";
 import { Li } from "./ContactList.styled";
+import { Contact } from "../App";
 
-export function ContactList({ contacts, handleDeleteContact }) {
+interface ContactListProps {
+  contacts: Contact[];
+  handleDeleteContact: (id: string) => void;
+}
+
+export const ContactList: FC<ContactListProps> = ({
+  contacts,
+  handleDeleteContact,
+}) => {
   return (
     <>
       <ul>
@@ -21,4 +31,4 @@ export function ContactList({ contacts, handleDeleteContact }) {
       </ul>
     </>
   );
-}
+};

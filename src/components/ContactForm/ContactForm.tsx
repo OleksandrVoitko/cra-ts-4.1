@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useState, FormEvent, ChangeEvent, FC } from "react";
 
-export const ContactForm = ({ onSubmit }) => {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
+interface ContactFormProps {
+  onSubmit: (name: string, number: string) => void;
+}
 
-  const handleChangeName = ({ target }) => {
-    setName(target.value);
+export const ContactForm: FC<ContactFormProps> = ({ onSubmit }) => {
+  const [name, setName] = useState<string>("");
+  const [number, setNumber] = useState<string>("");
+
+  const handleChangeName = ({ target }: ChangeEvent) => {
+    setName((target as HTMLInputElement).value);
   };
-  const handleChangeNumber = ({ target }) => {
-    setNumber(target.value);
+  const handleChangeNumber = ({ target }: ChangeEvent) => {
+    setNumber((target as HTMLInputElement).value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     onSubmit(name, number);

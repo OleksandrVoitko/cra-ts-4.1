@@ -1,4 +1,9 @@
-export function Filter({ filter, onChange }) {
+import { FC, ChangeEvent } from "react";
+interface FilterProps {
+  filter: string;
+  onChange: (e: ChangeEvent) => void;
+}
+export const Filter: FC<FilterProps> = ({ filter, onChange }) => {
   return (
     <>
       <label className="form-label" htmlFor="inputFilter">
@@ -15,4 +20,4 @@ export function Filter({ filter, onChange }) {
       />
     </>
   );
-}
+};
